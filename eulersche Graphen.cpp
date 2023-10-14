@@ -50,8 +50,8 @@ vector<int> find_eulerzyklus(vector<vector<tuple<int, int> > > &nachbarliste, in
     tie(a,b) = nachbarliste[current_vertex].back();
     nachbarliste[current_vertex].pop_back();
     current_vertex = a;
-    get<0>(nachbarliste[a][b]) = get<0>(nachbarliste[a][nachbarliste[a].size()-1]);
-    get<1>(nachbarliste[a][b]) = get<1>(nachbarliste[a][nachbarliste[a].size()-1]);
+
+    nachbarliste[a][b] = nachbarliste[a].back();
     get<1>(nachbarliste[get<0>(nachbarliste[a][b])][get<1>(nachbarliste[a][b])]) = b;
     nachbarliste[current_vertex].pop_back();
     cycle.push_back(current_vertex);
