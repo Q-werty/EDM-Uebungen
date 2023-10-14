@@ -66,8 +66,13 @@ vector<int> find_eulerzyklus(vector<vector<tuple<int, int> > > &nachbarliste, in
   return actual_cycle;
 }
 
-int main() {
-  Graph g("/Users/jurikaganskiy/Desktop/c++/eulerkreis/eulerkreis/ex1.txt");
+int main(int argc, char *argv[]) {
+  if (argc < 2){
+    cout << "Please call this program with a filename as its argument, e.g. \'./a.out /Test-Instanzen Eulertour/inst_1.\'";
+    return 0;
+  }
+  string filename = argv[1];
+  Graph g(filename);
   bool ist_eulersch = true;
   int number_of_edges = 0;
   for (int i=0; i<g.neighbor_lists.size(); i++){
