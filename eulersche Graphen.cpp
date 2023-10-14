@@ -46,14 +46,13 @@ vector<int> find_eulerzyklus(vector<vector<tuple<int, int> > > &nachbarliste, in
   cycle.push_back(starting_point);
   int current_vertex = starting_point;
   do {
-    int a, b;
-    tie(a, b) = nachbarliste[current_vertex].back();
+    int a = get<0>(nachbarliste[current_vertex][nachbarliste[current_vertex].size()-1]);
+    int b = get<1>(nachbarliste[current_vertex][nachbarliste[current_vertex].size()-1]);
     nachbarliste[current_vertex].pop_back();
-
-    nachbarliste[a][b] = nachbarliste[a].back();
-
-    get<1>(nachbarliste[get<0>(nachbarliste[a][b])][get<1>(nachbarliste[a][b])]) = b;
     current_vertex = a;
+    get<0>(nachbarliste[a][b]) = get<0>(nachbarliste[a][nachbarliste[a].size()-1]);
+    get<1>(nachbarliste[a][b]) = get<1>(nachbarliste[a][nachbarliste[a].size()-1]);
+    get<1>(nachbarliste[get<0>(nachbarliste[a][b])][get<1>(nachbarliste[a][b])]) = b;
     nachbarliste[current_vertex].pop_back();
     cycle.push_back(current_vertex);
   } while (current_vertex != starting_point);
@@ -68,7 +67,7 @@ vector<int> find_eulerzyklus(vector<vector<tuple<int, int> > > &nachbarliste, in
 }
 
 int main() {
-  Graph g("ex1.txt");
+  Graph g("/Users/jurikaganskiy/Desktop/c++/eulerkreis/eulerkreis/ex1.txt");
   bool ist_eulersch = true;
   int number_of_edges = 0;
   for (int i=0; i<g.neighbor_lists.size(); i++){
