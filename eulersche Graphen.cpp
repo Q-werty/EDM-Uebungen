@@ -6,6 +6,7 @@
 //
 
 #include <iostream>
+#include <ostream>
 #include <vector>
 #include <fstream>
 #include <string>
@@ -16,6 +17,20 @@ using namespace std;
 class Graph {
   public:
     int vertex_count;
+
+    /* Die Knoten sind lediglich Zahlen von 0 bis n-1,
+     * brauchen also keinen eigenen Datentyp. Wir spei-
+     * chern die Kanten in folgender Weise:
+     * Für jeden Knoten v gibt es eine Liste von Paaren.
+     * Die erste Zahl aus dem Paar gibt einen Nachbarn w
+     * von v an. Es steht auch v in der Liste von w. Hier
+     * kommt die zweite Zahl im Paar ins Spiel:
+     * In der Liste von v gibt die Zahl, die im Paar mit
+     * w steht, an, an welcher Stelle in der Liste von w
+     * das Tupel mit der Zahl v steht. Genauso gibt die
+     * Zahl, die mit v im Paar in der Liste von w steht
+     * an, an welcher Stelle w in der Liste von v steht. */
+  
     vector<vector<tuple<int, int> > > neighbor_lists;
     
     Graph(string filename){
@@ -33,7 +48,6 @@ class Graph {
         neighbor_lists[start].push_back(a);
         neighbor_lists[end].push_back(b);
       }
-         
     }
 };
 
@@ -68,7 +82,7 @@ vector<int> find_eulerzyklus(vector<vector<tuple<int, int> > > &nachbarliste, in
 
 int main(int argc, char *argv[]) {
   if (argc < 2){
-    cout << "Please call this program with a filename as its argument, e.g. \'./a.out /Test-Instanzen Eulertour/inst_1.\'";
+    cout << "Please call this program with a filename as its argument, e.g. \'./a.out /Test-Instanzen Eulertour/inst_1.\'" << endl;
     return 0;
   }
   string filename = argv[1];
