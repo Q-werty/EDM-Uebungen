@@ -6,7 +6,6 @@
 //
 
 #include <iostream>
-#include <ostream>
 #include <vector>
 #include <fstream>
 #include <string>
@@ -60,20 +59,25 @@ vector<int> find_eulerzyklus(vector<vector<tuple<int, int> > > &nachbarliste, in
   cycle.push_back(starting_point);
   int current_vertex = starting_point;
   do {
-    int a, b;
-    tie(a,b) = nachbarliste[current_vertex].back();
-    nachbarliste[current_vertex].pop_back();
-    current_vertex = a;
+    //Get new vertex and its position by getting the last neighbour of the current vertex
+    int new_vertex, new_vertex_pos;
+    tie(new_vertex, new_vertex_pos) = nachbarliste[current_vertex].back();
+    nachbarliste[current_vertex].pop_back(); //Remove neighbour from the current vertex's neighbour list
+    current_vertex = new_vertex; 
 
-    nachbarliste[a][b] = nachbarliste[a].back();
-    get<1>(nachbarliste[get<0>(nachbarliste[a][b])][get<1>(nachbarliste[a][b])]) = b;
-    nachbarliste[current_vertex].pop_back();
+    //Remove neighbour from the new vertex's neighbour list and replace it by the pair in the back of this list
+    nachbarliste[new_vertex][new_vertex_pos] = nachbarliste[new_vertex].back(); 
+    // In the partner of the pair we just moved, update the position part.
+    get<1>(nachbarliste[get<0>(nachbarliste[new_vertex][new_vertex_pos])]
+                       [get<1>(nachbarliste[new_vertex][new_vertex_pos])]) = new_vertex_pos;
+    //Remove the element in the back of the neighbour list (it was just moved to another place)
+    nachbarliste[new_vertex].pop_back();
     cycle.push_back(current_vertex);
   } while (current_vertex != starting_point);
   vector<int> actual_cycle {starting_point};
   for (int i=1; i < cycle.size(); i++) {
     vector<int> smaller_cycle = find_eulerzyklus(nachbarliste, cycle[i]);
-    for (int j=0; j<smaller_cycle.size(); j++) {
+    for (int j=0; j < smaller_cycle.size(); j++) {
       actual_cycle.push_back(smaller_cycle[j]);
     }
   }
@@ -82,11 +86,13 @@ vector<int> find_eulerzyklus(vector<vector<tuple<int, int> > > &nachbarliste, in
 
 int main(int argc, char *argv[]) {
   if (argc < 2){
-    cout << "Please call this program with a filename as its argument, e.g. \'./a.out /Test-Instanzen Eulertour/inst_1.\'" << endl;
+    cout << "Please call this program with a filename as its argument, e.g. \'./a.out Test_Instanzen_Eulertour/inst_1.\'" << endl;
     return 0;
   }
   string filename = argv[1];
   Graph g(filename);
+
+  //Check if the given Graph has a euler circuit
   bool ist_eulersch = true;
   int number_of_edges = 0;
   for (int i=0; i<g.neighbor_lists.size(); i++){
@@ -105,7 +111,10 @@ int main(int argc, char *argv[]) {
       for (int i=0; i<EulerZyklus.size(); i++) {
         cout << EulerZyklus[i] << " ";
       }
+    } else {
+      cout <<"nicht eulersch"; // Nicht zusammenhängend
     }
+    cout << endl;
   }
   return 0;
 }
